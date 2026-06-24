@@ -11,13 +11,29 @@
 	</head>
 	<body>
 		<header>
+			<span>Header</span>
 		</header>
 		
+		<nav>
+			<span class="menu-item" data-type="libro">Libro</span>
+			<span class="menu-item" data-type="ricetta">Ricetta</span>
+			<span class="menu-item" data-type="regione">Regione</span>
+		</nav>
+		
 		<div class="container">
-			<h1>CIAO</h1>
+			<div id="search">
+				<span>Filtro Ricerca</span>
+			</div>
+			
+			<div id="content">
+				<h2>Risultati della ricerca</h2>
+				<div id="result">
+				</div>
+			</div>
 		</div>
 		
 		<footer>
+			<span>Footer</span>
 		</footer>
 	</body>
 </html>

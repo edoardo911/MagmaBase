@@ -1,0 +1,141 @@
+/* Variables */
+
+:root {
+	--blocks-height: 2.5rem;
+	--text-color: #7F545B;
+	--bg-color: #FFB6C1;
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+/* Header */
+
+header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+	color: var(--text-color);
+	background-color: var(--bg-color);
+	height: var(--blocks-height);
+	border: 1px solid var(--text-color);
+}
+
+/* Navigation */
+
+nav {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+	color: var(--text-color);
+	background-color: var(--bg-color);
+	height: var(--blocks-height);
+	border: 1px solid var(--text-color);
+}
+
+nav span {
+	padding: 0.5rem;
+	margin-left: 1rem;
+	border-radius: 10px;
+	
+	transition: background-color 0.3s, color 0.3s;
+}
+
+nav span:hover, nav span.selected {
+	cursor: pointer;
+	background-color: var(--text-color);
+	color: var(--bg-color);
+}
+
+/* Container */
+div.container {
+	display: flex;
+	flex-direction: row;
+	
+	color: var(--text-color);
+	background-color: var(--bg-color);
+	height: calc(100vh - 6px - 3 * var(--blocks-height));
+}
+
+div#search {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	
+	width: 15%;
+	border: 1px solid var(--text-color);
+}
+
+div#content {
+	width: 85%;
+	padding-left: 1rem;
+	border: 1px solid var(--text-color);
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	
+	width: 100%;
+	margin-left: 12%;
+}
+
+form input {
+	background-color: transparent;
+	color: var(--text-color);
+	width: 83%;
+	border: none;
+	border-bottom: 2px solid var(--text-color);
+}
+
+input:focus {
+	outline: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffd4da inset !important;
+	-webkit-text-fill-color: var(--text-color);
+}
+
+form label {
+	margin-top: 1rem;
+}
+
+form button {
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	
+	font-size: 1rem;
+	padding: 0.2rem 0rem;
+	width: 85%;
+	margin-top: 1.5rem;
+	border: 2px solid var(--text-color);
+	border-radius: 20px;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+form button:hover {
+	cursor: pointer;
+	background-color: var(--text-color);
+	color: var(--bg-color);
+}
+
+/* Footer */
+
+footer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	height: var(--blocks-height);
+	border: 1px solid var(--text-color);
+}
