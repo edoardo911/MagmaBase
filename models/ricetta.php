@@ -1,24 +1,30 @@
 <?php
+require_once "Database.php";
+
 class Ricetta
 {
-	private int $numero;
-	private string $nome;
-	private string $tipo;
+	private PDO $db;
 	
-	public function __construct($numero, $nome, $tipo)
+	public function __construct()
 	{
-		$this->numero = $numero;
-		$this->nome = $nome;
-		$this->tipo = $tipo;
+		$this->db = Database::getConnection();
 	}
 	
-	public function toArray(): array
+	public function search(array $filters): array
 	{
-		return [
-			'numero': $this->numero,
-			'nome': $this->nome,
-			'tipo': $this->tipo
+		$sql = "SELECT ri.numero, ri.titolo, ri.tipo FROM Ricetta ri WHERE ri.titolo LIKE :titolo AND ri.tipo LIKE :tipo";
+		$params = [
+			":titolo" => "%" . ($filters["nome"] ?? "") . "%",
+			":tipo" => "%" . ($filters["tipo"] ?? "") . "%",
 		];
+		
+		if(!empty($filters["numero"])) {
+			$sql .= " AND ri.numero = :numero";
+			$params[":numero"] = $filters["numero"];
+		}
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);		
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
 ?>

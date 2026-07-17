@@ -1,21 +1,29 @@
 <?php
+require_once "Database.php";
+
 class Regione
 {
-	private int $cod;
-	private string $nome;
+	private PDO $db;
 	
-	public function __construct($cod, $nome)
+	public function __construct()
 	{
-		$this->cod = $cod;
-		$this->nome = $nome;
+		$this->db = Database::getConnection();
 	}
 	
-	public function toArray(): array
+	public function search(array $filters): array
 	{
-		return [
-			'cod': $this->cod,
-			'nome': $this->nome
+		$sql = "SELECT * FROM Regione WHERE nome LIKE :nome";
+		$params = [
+			":nome" => "%" . ($filters["nome"] ?? "") . "%",
 		];
+		
+		if(!empty($filters["codice"])) {
+			$sql .= " AND cod = :codice";
+			$params[":codice"] = $filters["codice"];
+		}
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
 ?>

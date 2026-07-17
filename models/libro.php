@@ -1,24 +1,30 @@
 <?php
-class Regione
+require_once "Database.php";
+
+class Libro
 {
-	private int $codISBN;
-	private string $titolo;
-	private int $anno;
+	private PDO $db;
 	
-	public function __construct($codISBN, $titolo, $anno)
+	public function __construct()
 	{
-		$this->codISBN = $codISBN;
-		$this->titolo = $titolo;
-		$this->anno = $anno;
+		$this->db = Database::getConnection();
 	}
 	
-	public function toArray(): array
+	public function search(array $filters): array
 	{
-		return [
-			'codISBN': $this->codISBN,
-			'titolo': $this->titolo,
-			'anno': $this->anno
+		$sql = "SELECT * FROM Libro WHERE codISBN LIKE :isbn AND titolo LIKE :titolo";
+		$params = [
+			":isbn" => "%" . ($filters["isbn"] ?? "") . "%",
+			":titolo" => "%" . ($filters["titolo"] ?? "") . "%",
 		];
+		
+		if(!empty($filters["anno"])) {
+			$sql .= " AND anno = :anno";
+			$params[":anno"] = $filters["anno"];
+		}
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
 ?>

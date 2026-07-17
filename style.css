@@ -17,11 +17,14 @@ header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 	
 	color: var(--text-color);
 	background-color: var(--bg-color);
 	height: var(--blocks-height);
 	border: 1px solid var(--text-color);
+	
+	font-size: 2rem;
 }
 
 /* Navigation */
@@ -127,15 +130,23 @@ form button:hover {
 	color: var(--bg-color);
 }
 
+/* Result */
+div#result {
+	max-height: calc(100% - 4.5rem);
+	overflow-y: auto;
+}
+
 /* Footer */
 
 footer {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 	
 	background-color: var(--bg-color);
 	color: var(--text-color);
 	height: var(--blocks-height);
 	border: 1px solid var(--text-color);
+	z-index: 999;
 }

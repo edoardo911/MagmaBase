@@ -11,7 +11,7 @@
 	</head>
 	<body>
 		<header>
-			<span>Header</span>
+			<span><b>MAGMABASE</b></span>
 		</header>
 		
 		<nav>
@@ -33,7 +33,7 @@
 		</div>
 		
 		<footer>
-			<span>Footer</span>
+			<span>Disclaimer: questo è un progetto universitario per UniBG</span>
 		</footer>
 	</body>
 </html>

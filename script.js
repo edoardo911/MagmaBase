@@ -55,7 +55,7 @@ function showEntity(entityName) {
 
     let html = `
         <h2>${entity.title}</h2>
-        <form id="searchForm" action="/${entityName}.php" method="POST">
+        <form id="searchForm">
     `;
 
     entity.fields.forEach(field => {
@@ -67,7 +67,8 @@ function showEntity(entityName) {
 			>
         `;
     });
-
+	
+	html += `<input type="hidden" name="entity" value="${entityName}">`;
     html += `
             <button type="submit">
                 Cerca
@@ -90,4 +91,17 @@ $(function() {
 	
 	$('.menu-item').first().addClass('selected');
 	showEntity("libro");
+});
+
+$(document).on("submit", "#searchForm", function(e) {
+	e.preventDefault();
+	
+	$.ajax({
+		url: "search.php",
+		method: "POST",
+		data: $(this).serialize(),
+		success: function(data) {
+			$("#result").html(data);
+		},
+	});
 });

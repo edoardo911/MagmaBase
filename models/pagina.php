@@ -1,21 +1,29 @@
 <?php
+require_once "Database.php";
+
 class Pagina
 {
-	private int $libro;
-	private int $numeroPagina;
+	private PDO $db;
 	
-	public function __construct($libro, $numeroPagina)
+	public function __construct()
 	{
-		$this->libro = $libro;
-		$this->numeroPagina = $numeroPagina;
+		$this->db = Database::getConnection();
 	}
 	
-	public function toArray(): array
+	public function search(array $filters): array
 	{
-		return [
-			'libro': $this->libro,
-			'numeroPagina': $this->numeroPagina
+		$sql = "SELECT * FROM Regione WHERE nome LIKE :nome";
+		$params = [
+			":nome" => "%" . ($filters["nome"] ?? "") . "%",
 		];
+		
+		if(!empty($filters["codice"])) {
+			$sql .= " AND cod = :codice";
+			$params[":codice"] = $filters["codice"];
+		}
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
 ?>
