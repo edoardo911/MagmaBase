@@ -4,7 +4,7 @@ const entities = {
         fields: [
             {
                 label: "Codice ISBN",
-                name: "isbn"
+                name: "codISBN"
             },
             {
                 label: "Titolo",
@@ -26,7 +26,7 @@ const entities = {
             },
 			{
 				label: "Nome",
-				name: "nome"
+				name: "titolo"
 			},
 			{
 				label: "Tipo",
@@ -40,7 +40,7 @@ const entities = {
         fields: [
 			{
 				label: "Codice",
-				name: "codice"
+				name: "cod"
 			},
             {
                 label: "Nome",
@@ -95,13 +95,48 @@ $(function() {
 
 $(document).on("submit", "#searchForm", function(e) {
 	e.preventDefault();
-	
+
+	const entityName = $(this).find('[name="entity"]').val();
+
 	$.ajax({
 		url: "search.php",
 		method: "POST",
 		data: $(this).serialize(),
+		dataType: "json",
 		success: function(data) {
-			$("#result").html(data);
+			renderResults(entityName, data);
 		},
+		error: function() {
+			$("#result").html("<p>Si è verificato un errore durante la ricerca.</p>");
+		}
 	});
 });
+
+function renderResults(entityName, data) {
+	const entity = entities[entityName];
+
+	if (!Array.isArray(data) || data.length === 0) {
+		$('#result').html('<p>Nessun risultato trovato.</p>');
+		return;
+	}
+
+	let html = '<table id="resultsTable"><thead><tr>';
+
+	entity.fields.forEach(field => {
+		html += `<th>${field.label}</th>`;
+	});
+	html += '</tr></thead><tbody>';
+
+	data.forEach(row => {
+		html += '<tr>';
+		entity.fields.forEach(field => {
+			const value = row[field.name] ?? '';
+			html += `<td>${$('<div>').text(value).html()}</td>`;
+		});
+		html += '</tr>';
+	});
+
+	html += '</tbody></table>';
+
+	$('#result').html(html);
+}
