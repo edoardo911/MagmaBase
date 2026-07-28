@@ -4,15 +4,28 @@ const entities = {
         fields: [
             {
                 label: "Codice ISBN",
-                name: "codISBN"
+                name: "isbn",
+				searchable: true
             },
             {
                 label: "Titolo",
-                name: "titolo"
+                name: "titolo",
+				searchable: true
             },
 			{
 				label: "Anno",
-				name: "anno"
+				name: "anno",
+				searchable: true
+			},
+			{
+				label: "N. pagine",
+				name: "numPagine",
+				searchable: false
+			},
+			{
+				label: "N. ricette",
+				name: "numRicette",
+				searchable: false
 			}
         ]
     },
@@ -22,15 +35,28 @@ const entities = {
         fields: [
             {
                 label: "Numero",
-                name: "numero"
+                name: "numero",
+				searchable: true
             },
 			{
 				label: "Nome",
-				name: "titolo"
+				name: "nome",
+				searchable: true
 			},
 			{
 				label: "Tipo",
-				name: "tipo"
+				name: "tipo",
+				searchable: true
+			},
+			{
+				label: "Regione",
+				name: "regioni",
+				searchable: false
+			},
+			{
+				label: "N. pubblicazioni",
+				name: "numPubblicazioni",
+				searchable: false
 			}
         ]
     },
@@ -59,6 +85,7 @@ function showEntity(entityName) {
     `;
 
     entity.fields.forEach(field => {
+		if (field.searchable === false) return;
         html += `
 			<label>${field.label}</label>
 			<input

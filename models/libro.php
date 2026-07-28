@@ -12,16 +12,21 @@ class Libro
 	
 	public function search(array $filters): array
 	{
-		$sql = "SELECT * FROM Libro WHERE codISBN LIKE :isbn AND titolo LIKE :titolo";
+		$sql = "SELECT l.codISBN AS isbn, l.titolo, l.anno,
+					(SELECT COUNT(*) FROM Pagina WHERE Pagina.libro = l.codISBN) AS numPagine,
+					(SELECT COUNT(*) FROM RicettaPubblicata WHERE RicettaPubblicata.libro = l.codISBN) AS numRicette
+				FROM Libro l
+				WHERE l.codISBN LIKE :isbn AND l.titolo LIKE :titolo";
 		$params = [
-			":isbn" => "%" . ($filters["isbn"] ?? "") . "%",
+			":isbn"   => "%" . ($filters["isbn"] ?? "") . "%",
 			":titolo" => "%" . ($filters["titolo"] ?? "") . "%",
 		];
-		
-		if(!empty($filters["anno"])) {
-			$sql .= " AND anno = :anno";
+	
+		if (!empty($filters["anno"])) {
+			$sql .= " AND l.anno = :anno";
 			$params[":anno"] = $filters["anno"];
 		}
+	
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
