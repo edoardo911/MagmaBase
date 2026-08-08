@@ -35,5 +35,24 @@ class Ricetta
 		$stmt->execute($params);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+	
+	public function getIngredienti(int $numero): array
+	{
+		$sql = "SELECT ingrediente, quantita FROM Ingrediente WHERE numeroRicetta = :numero";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([":numero" => $numero]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+	
+	public function getPubblicazioni(int $numero): array
+	{
+		$sql = "SELECT l.titolo AS libro, rp.numeroPagina
+				FROM RicettaPubblicata rp
+				JOIN Libro l ON l.codISBN = rp.libro
+				WHERE rp.numeroRicetta = :numero";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([":numero" => $numero]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
 ?>

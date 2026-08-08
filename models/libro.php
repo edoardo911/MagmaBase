@@ -31,5 +31,17 @@ class Libro
 		$stmt->execute($params);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+	
+	public function getPubblicazioni(string $isbn): array
+	{
+		$sql = "SELECT ri.titolo AS titolo, rp.numeroPagina
+				FROM RicettaPubblicata rp
+				JOIN Ricetta ri ON ri.numero = rp.numeroRicetta
+				WHERE rp.libro = :isbn";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([":isbn" => $isbn]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+	
 }
 ?>

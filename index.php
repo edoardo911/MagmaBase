@@ -27,6 +27,7 @@
 			
 			<div id="content">
 				<h2>Risultati della ricerca</h2>
+				<p id="resultHint" style="display:none;">Cliccare su un risultato per maggiori informazioni</p>
 				<div id="result">
 				</div>
 			</div>
@@ -35,5 +36,13 @@
 		<footer>
 			<span>Disclaimer: questo è un progetto universitario per UniBG</span>
 		</footer>
+		
+		<div id="detailModal" class="modal-overlay" style="display:none;">
+			<div class="modal-box">
+				<button id="modalClose" class="modal-close">&times;</button>
+				<h3 id="modalTitle"></h3>
+				<dl id="modalBody"></dl>
+			</div>
+		</div>
 	</body>
 </html>

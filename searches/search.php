@@ -1,7 +1,7 @@
 <?php
-require_once "models/libro.php";
-require_once "models/ricetta.php";
-require_once "models/regione.php";
+require_once __DIR__."/../models/libro.php";
+require_once __DIR__."/../models/ricetta.php";
+require_once __DIR__."/../models/regione.php";
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
