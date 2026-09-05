@@ -90,12 +90,31 @@ form {
 	margin-left: 12%;
 }
 
+form.popup {
+	margin-left: 8%;
+}
+
 form input {
 	background-color: transparent;
 	color: var(--text-color);
 	width: 83%;
 	border: none;
 	border-bottom: 2px solid var(--text-color);
+}
+
+form select {
+	padding: 0.2rem;
+	margin-top: 0.1rem;
+	background-color: transparent;
+	color: var(--text-color);
+	width: 83%;
+	border: 2px solid var(--text-color);
+	border-radius: 5px;
+	transition: 0.3s;
+}
+
+form select:hover {
+	cursor: pointer;
 }
 
 input:focus {
@@ -182,6 +201,7 @@ div#result {
 	min-width: 300px;
 	max-width: 500px;
 	max-height: 80vh;
+	overflow-x: hidden;
 	overflow-y: auto;
 	padding: 1.5rem;
 }

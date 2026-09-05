@@ -53,9 +53,9 @@ function showEntity(entityName) {
             <button type="submit">
                 Cerca <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-        </form>
-    `;
 
+		</form>
+		`;
     $('#search').html(html);
 }
 
@@ -131,6 +131,11 @@ $(document).on('click', '#resultsTable tbody tr', function () {
 	const row = $(this).data('rowData');
 	const entityName = $(this).data('entityName');
 	showDetailModal(entityName, row);
+});
+
+$(document).on('click', '#new_recipe', function () {
+	renderCrudRecipeDetail();
+	$('#detailModal').fadeIn(150);
 });
 
 const entityDetailRenderers = {
@@ -293,6 +298,65 @@ function renderRegioneDetail(row) {
 		},
 		error: function() {
 			$('#modalBody').html('<p>Errore nel caricamento delle ricette.</p>');
+		}
+	});
+}
+
+function renderCrudRecipeDetail() {
+	$('#modalTitle').html("Nuova Ricetta <i class='fa-solid fa-scroll'></i>");
+	$('#modalBody').html("Caricamento...");
+
+	let selectBook = '';
+	let selectPage = "<select name='pagina' required><option value=''>--Scegli pagina--</option></select>";
+	let selectRegion = '';
+
+	$.ajax({
+		url: 'searches/get_crud_info.php',
+		method: 'GET',
+		success: function(data) {
+			//libri
+			selectBook = "<select name='isbn' required><option value=''>--Seleziona libro--</option>";
+			data["libri"].forEach(item => {
+				selectBook += `<option value='${item.codISBN}' id='libro-ricetta-nuova'>${item.titolo}</option>`;
+			});
+			selectBook += "</select>";
+			//regioni
+			selectRegion = "<select name='regione' required><option value=''>--Seleziona regione--</option>";
+			data["regioni"].forEach(item => {
+				selectRegion += `<option value='${item.cod}'>${item.nome}</option>`;
+			});
+			selectRegion += "</select>";
+
+			$('#modalBody').html(`
+				<form id='createForm' class='popup'>
+					<label>Titolo</label>
+					<input type='text' name='titolo' required/>
+
+					<label>Tipo</label>
+					<select name='tipo' required>
+						<option value=''>--Seleziona tipo--</option>
+						<option value='antipasto'>Antipasto</option>
+						<option value='primo'>Primo</option>
+						<option value='secondo'>Secondo</option>
+						<option value='contorno'>Contorno</option>
+						<option value='dessert'>Dessert</option>
+					</select>
+					
+					<label>Libro</label>
+					${selectBook}
+
+					<label>Pagina</label>
+					${selectPage}
+
+					<label>Regione</label>
+					${selectRegion}
+
+					<button type='submit'>Crea +</button>
+				</form>
+			`);
+		},
+		error: function() {
+			$('#modalBody').html('<p>Errore nel caricamento dei dati.</p>');
 		}
 	});
 }

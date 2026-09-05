@@ -38,5 +38,13 @@ class Regione
 		$stmt->execute([":cod" => $cod]);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	public function getAll(): array
+	{
+		$sql = "SELECT re.cod, re.nome FROM Regione re";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
 ?>

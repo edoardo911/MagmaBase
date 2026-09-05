@@ -19,6 +19,7 @@
 			<span class="menu-item" data-type="libro">Libro <i class="fa-solid fa-book"></i></span>
 			<span class="menu-item" data-type="ricetta">Ricetta <i class="fa-solid fa-scroll"></i></span>
 			<span class="menu-item" data-type="regione">Regione <i class="fa-solid fa-earth-americas"></i></span>
+			<span id="new_recipe">Crea Ricetta <i class="fa-solid fa-plus"></i></button>
 		</nav>
 		
 		<div class="container">

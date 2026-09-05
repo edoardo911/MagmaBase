@@ -43,5 +43,12 @@ class Libro
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
+	public function getAll(): array
+	{
+		$sql = "SELECT l.codISBN, l.titolo FROM Libro l";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([]);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
 ?>
