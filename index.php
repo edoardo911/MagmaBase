@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="style.css"/>
 		
 		<script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+		<script src="https://kit.fontawesome.com/05dd526cae.js" crossorigin="anonymous"></script>
 		<script src="script.js"></script>
 	</head>
 	<body>
@@ -15,9 +16,9 @@
 		</header>
 		
 		<nav>
-			<span class="menu-item" data-type="libro">Libro</span>
-			<span class="menu-item" data-type="ricetta">Ricetta</span>
-			<span class="menu-item" data-type="regione">Regione</span>
+			<span class="menu-item" data-type="libro">Libro <i class="fa-solid fa-book"></i></span>
+			<span class="menu-item" data-type="ricetta">Ricetta <i class="fa-solid fa-scroll"></i></span>
+			<span class="menu-item" data-type="regione">Regione <i class="fa-solid fa-earth-americas"></i></span>
 		</nav>
 		
 		<div class="container">

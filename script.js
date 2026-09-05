@@ -51,7 +51,7 @@ function showEntity(entityName) {
 	html += `<input type="hidden" name="entity" value="${entityName}">`;
     html += `
             <button type="submit">
-                Cerca
+                Cerca <i class="fa-solid fa-magnifying-glass"></i>
             </button>
         </form>
     `;
@@ -162,7 +162,7 @@ function renderDefaultDetail(entity, row) {
 }
 
 function renderRicettaDetail(row) {
-	$('#modalTitle').text(row.nome);
+	$('#modalTitle').html(row.nome + " <i class='fa-solid fa-scroll'></i>");
 	$('#modalBody').html('<p>Caricamento dettagli...</p>');
 
 	const ingredientiRequest = $.ajax({
@@ -223,7 +223,7 @@ function renderRicettaDetail(row) {
 }
 
 function renderLibroDetail(row) {
-	$('#modalTitle').text(row.titolo);
+	$('#modalTitle').html(row.titolo + " <i class='fa-solid fa-book'></i>");
 	$('#modalBody').html('<p>Caricamento pubblicazioni...</p>');
 
 	$.ajax({
@@ -261,7 +261,7 @@ function renderLibroDetail(row) {
 }
 
 function renderRegioneDetail(row) {
-	$('#modalTitle').text(row.nome);
+	$('#modalTitle').html(row.nome + " <i class='fa-solid fa-earth-americas'></i>");
 	$('#modalBody').html('<p>Caricamento ricette...</p>');
 
 	$.ajax({

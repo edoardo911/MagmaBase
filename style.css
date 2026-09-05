@@ -133,6 +133,14 @@ form button:hover {
 	color: var(--bg-color);
 }
 
+form button i {
+	font-size: 0.8rem;
+}
+
+i.fa-solid {
+	margin-left: 0.1rem;
+}
+
 /* Result */
 div#result {
 	flex: 1;
@@ -235,7 +243,6 @@ div#result {
 }
 
 /* Footer */
-
 footer {
 	display: flex;
 	flex-direction: row;
