@@ -55,7 +55,7 @@ class Ricetta
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
-	public function create(string $titolo, string $tipo, string $isbn, string $pagina, string $regione): void
+	public function create(string $titolo, string $tipo): void
 	{
 		$sql = "INSERT INTO Ricetta(titolo, tipo) values(:titolo, :tipo)";
 		$params = [
@@ -65,22 +65,27 @@ class Ricetta
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		$newID = (int) $this->db->lastInsertId();
+	}
 
-		$sql = "INSERT INTO RicettaPubblicata(numeroRicetta, libro, numeroPagina) values(:id, :isbn, :pagina)";
+	public function getDatiRicetta($id): array
+	{
+		$sql = "SELECT titolo, tipo FROM Ricetta WHERE numero = :id";
 		$params = [
-			":id" => $newID,
-			":isbn" => $isbn,
-			":pagina" => $pagina,
+			":id" => $id,
 		];
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 
-		$sql = "INSERT INTO RicettaRegionale(Regione, ricetta) values(:regione, :id)";
+	public function update($id, $titolo, $tipo): void
+	{
+		$sql = "UPDATE Ricetta SET titolo = :titolo, tipo = :tipo WHERE numero = :id";
 		$params = [
-			":regione" => $regione,
-			":id" => $newID,
+			":id" => $id,
+			":titolo" => $titolo,
+			":tipo" => $tipo,
 		];
 
 		$stmt = $this->db->prepare($sql);

@@ -6,17 +6,13 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-$titolo = $_POST['titolo'] ?? null;
-$tipo = $_POST['tipo'] ?? null;
+$id = $_GET['id'] ?? null;
 
-if (empty($titolo) || empty($tipo)) {
+if ($id === null || $id === '') {
     http_response_code(400);
-    echo json_encode(['error' => 'Input non validi']);
+    echo json_encode(['error' => 'Codice ricetta non valido']);
     exit;
 }
 
 $ricetta = new Ricetta();
-$ricetta->create($titolo, $tipo);
-echo json_encode([
-	'success' => true
-]);
+echo json_encode($ricetta->getDatiRicetta($id));

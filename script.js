@@ -221,8 +221,8 @@ function renderRicettaDetail(row) {
 			html += '</ul>';
 		}
 
-		html += `<button id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
-		html += `<button id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
+		html += `<button class='custom' id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
+		html += `<button class='custom' id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
 
 		$('#modalBody').html(html);
 	}).fail(function() {
@@ -305,63 +305,34 @@ function renderRegioneDetail(row) {
 	});
 }
 
-function renderCrudRecipeDetail() {
-	$('#modalTitle').html("Nuova Ricetta <i class='fa-solid fa-scroll'></i>");
-	$('#modalBody').html("Caricamento...");
+function renderCrudRecipeDetail(id = "", titolo = "", tipo = "", editMode = false) {
+	if(editMode) {
+		$('#modalTitle').html("Modifica Ricetta <i class='fa-solid fa-pen'></i>");
+	} else {
+		$('#modalTitle').html("Nuova Ricetta <i class='fa-solid fa-scroll'></i>");
+	}
+	$('#modalBody').html(`
+		<form id='${editMode ? 'editForm' : 'createForm'}' class='popup'>
+			<input type='hidden' value='${id}' name='id'/>
 
-	let selectBook = '';
-	let selectPage = "<select name='pagina' id='pagina-ricetta-nuova' required><option value=''>--Scegli pagina--</option></select>";
-	let selectRegion = '';
+			<label>Titolo</label>
+			<input type='text' name='titolo' id='titolo' required/>
 
-	$.ajax({
-		url: 'searches/get_crud_info.php',
-		method: 'GET',
-		success: function(data) {
-			//libri
-			selectBook = "<select name='isbn' id='libro-ricetta-nuova' required><option value=''>--Seleziona libro--</option>";
-			data["libri"].forEach(item => {
-				selectBook += `<option value='${item.codISBN}'>${item.titolo}</option>`;
-			});
-			selectBook += "</select>";
-			//regioni
-			selectRegion = "<select name='regione' required><option value=''>--Seleziona regione--</option>";
-			data["regioni"].forEach(item => {
-				selectRegion += `<option value='${item.cod}'>${item.nome}</option>`;
-			});
-			selectRegion += "</select>";
+			<label>Tipo</label>
+			<select name='tipo' id='tipo' required>
+				<option value=''>--Seleziona tipo--</option>
+				<option value='antipasto'>Antipasto</option>
+				<option value='primo'>Primo</option>
+				<option value='secondo'>Secondo</option>
+				<option value='contorno'>Contorno</option>
+				<option value='dessert'>Dessert</option>
+			</select>
 
-			$('#modalBody').html(`
-				<form id='createForm' class='popup'>
-					<label>Titolo</label>
-					<input type='text' name='titolo' required/>
-
-					<label>Tipo</label>
-					<select name='tipo' required>
-						<option value=''>--Seleziona tipo--</option>
-						<option value='antipasto'>Antipasto</option>
-						<option value='primo'>Primo</option>
-						<option value='secondo'>Secondo</option>
-						<option value='contorno'>Contorno</option>
-						<option value='dessert'>Dessert</option>
-					</select>
-					
-					<label>Libro</label>
-					${selectBook}
-
-					<label>Pagina</label>
-					${selectPage}
-
-					<label>Regione</label>
-					${selectRegion}
-
-					<button type='submit'>Crea +</button>
-				</form>
-			`);
-		},
-		error: function() {
-			$('#modalBody').html('<p>Errore nel caricamento dei dati.</p>');
-		}
-	});
+			<button type='submit'>${editMode ? 'Modifica' : 'Crea'}</button>
+		</form>
+	`);
+	$("#titolo").val(titolo);
+	$("#tipo").val(tipo);
 }
 
 $(document).on("submit", "#createForm", function(e) {
@@ -373,29 +344,47 @@ $(document).on("submit", "#createForm", function(e) {
 		data: $(this).serialize(),
 		dataType: "json",
 		success: function(data) {
-			window.location.reload();
+			$('#modalBody').html('<p>Creazione ricetta riuscita.</p>');
 		},
 		error: function(err) {
 			console.log(err.responseText);
+			$('#modalBody').html('<p>Creazione ricetta non riuscita.</p>');
 		}
 	});
 });
 
-$(document).on('change', '#libro-ricetta-nuova', function() {
+$(document).on("submit", "#editForm", function(e) {
+	e.preventDefault();
+
+	console.log($(this).serialize());
+
 	$.ajax({
-		url: 'searches/get_pages.php',
+		url: "crud/update_ricetta.php",
+		method: "POST",
+		data: $(this).serialize(),
+		dataType: "json",
+		success: function(data) {
+			$('#modalBody').html('<p>Modifica ricetta riuscita.</p>');
+		},
+		error: function(err) {
+			console.log(err.responseText);
+			$('#modalBody').html('<p>Modifica ricetta non riuscita.</p>');
+		}
+	});
+});
+
+$(document).on('click', '#edit-recipe', function() {
+	let id = $(this).data("id");
+	$.ajax({
+		url: 'searches/get_ricetta.php',
 		method: 'GET',
-		data: { 'isbn': $(this).val() },
+		data: { 'id': id },
 		dataType: 'json',
 		success: function(data) {
-			let html = "<option value=''>--Scegli pagina--</option>";
-			data.forEach((item) => {
-				html += `<option value='${item.numeroPagina}'>${item.numeroPagina}</option>`;
-			});
-			$("#pagina-ricetta-nuova").html(html);
+			renderCrudRecipeDetail(id, data[0]["titolo"], data[0]["tipo"], true);
 		},
-		error: function() {
-			$('#modalBody').html('<p>Errore nel caricamento delle pagine.</p>');
+		error: function(err) {
+			console.log(err.responseText);
 		}
 	});
 });
@@ -407,10 +396,11 @@ $(document).on('click', '#delete-recipe', function() {
 		data: { 'numero': $(this).data("id") },
 		dataType: 'json',
 		success: function(data) {
-			window.location.reload();
+			$('#modalBody').html('<p>Cancellazione ricetta riuscita.</p>');
 		},
 		error: function(err) {
 			console.log(err.responseText);
+			$('#modalBody').html('<p>Cancellazione ricetta non riuscita.</p>');
 		}
 	});
 });
