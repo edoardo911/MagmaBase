@@ -25,5 +25,16 @@ class Pagina
 		$stmt->execute($params);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	public function getAll(string $isbn): array
+	{
+		$sql = "SELECT libro, numeroPagina FROM Pagina WHERE libro = :isbn ORDER BY numeroPagina";
+		$params = [
+			":isbn" => $isbn
+		];
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
 ?>

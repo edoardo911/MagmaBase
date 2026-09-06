@@ -221,6 +221,9 @@ function renderRicettaDetail(row) {
 			html += '</ul>';
 		}
 
+		html += `<button id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
+		html += `<button id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
+
 		$('#modalBody').html(html);
 	}).fail(function() {
 		$('#modalBody').html('<p>Errore nel caricamento dei dettagli.</p>');
@@ -307,7 +310,7 @@ function renderCrudRecipeDetail() {
 	$('#modalBody').html("Caricamento...");
 
 	let selectBook = '';
-	let selectPage = "<select name='pagina' required><option value=''>--Scegli pagina--</option></select>";
+	let selectPage = "<select name='pagina' id='pagina-ricetta-nuova' required><option value=''>--Scegli pagina--</option></select>";
 	let selectRegion = '';
 
 	$.ajax({
@@ -315,9 +318,9 @@ function renderCrudRecipeDetail() {
 		method: 'GET',
 		success: function(data) {
 			//libri
-			selectBook = "<select name='isbn' required><option value=''>--Seleziona libro--</option>";
+			selectBook = "<select name='isbn' id='libro-ricetta-nuova' required><option value=''>--Seleziona libro--</option>";
 			data["libri"].forEach(item => {
-				selectBook += `<option value='${item.codISBN}' id='libro-ricetta-nuova'>${item.titolo}</option>`;
+				selectBook += `<option value='${item.codISBN}'>${item.titolo}</option>`;
 			});
 			selectBook += "</select>";
 			//regioni
@@ -360,6 +363,57 @@ function renderCrudRecipeDetail() {
 		}
 	});
 }
+
+$(document).on("submit", "#createForm", function(e) {
+	e.preventDefault();
+
+	$.ajax({
+		url: "crud/post_ricetta.php",
+		method: "POST",
+		data: $(this).serialize(),
+		dataType: "json",
+		success: function(data) {
+			window.location.reload();
+		},
+		error: function(err) {
+			console.log(err.responseText);
+		}
+	});
+});
+
+$(document).on('change', '#libro-ricetta-nuova', function() {
+	$.ajax({
+		url: 'searches/get_pages.php',
+		method: 'GET',
+		data: { 'isbn': $(this).val() },
+		dataType: 'json',
+		success: function(data) {
+			let html = "<option value=''>--Scegli pagina--</option>";
+			data.forEach((item) => {
+				html += `<option value='${item.numeroPagina}'>${item.numeroPagina}</option>`;
+			});
+			$("#pagina-ricetta-nuova").html(html);
+		},
+		error: function() {
+			$('#modalBody').html('<p>Errore nel caricamento delle pagine.</p>');
+		}
+	});
+});
+
+$(document).on('click', '#delete-recipe', function() {
+	$.ajax({
+		url: 'crud/delete_ricetta.php',
+		method: 'POST',
+		data: { 'numero': $(this).data("id") },
+		dataType: 'json',
+		success: function(data) {
+			window.location.reload();
+		},
+		error: function(err) {
+			console.log(err.responseText);
+		}
+	});
+});
 
 $(document).on('click', '#modalClose', closeModal);
 $(document).on('click', '#detailModal', function (e) {

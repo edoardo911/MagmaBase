@@ -54,5 +54,47 @@ class Ricetta
 		$stmt->execute([":numero" => $numero]);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+	
+	public function create(string $titolo, string $tipo, string $isbn, string $pagina, string $regione): void
+	{
+		$sql = "INSERT INTO Ricetta(titolo, tipo) values(:titolo, :tipo)";
+		$params = [
+			":titolo" => $titolo,
+			":tipo" => $tipo,
+		];
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		$newID = (int) $this->db->lastInsertId();
+
+		$sql = "INSERT INTO RicettaPubblicata(numeroRicetta, libro, numeroPagina) values(:id, :isbn, :pagina)";
+		$params = [
+			":id" => $newID,
+			":isbn" => $isbn,
+			":pagina" => $pagina,
+		];
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		$sql = "INSERT INTO RicettaRegionale(Regione, ricetta) values(:regione, :id)";
+		$params = [
+			":regione" => $regione,
+			":id" => $newID,
+		];
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+	}
+	
+	public function delete($numero): void
+	{
+		$sql = "DELETE FROM Ricetta WHERE numero = :numero";
+		$params = [
+			":numero" => $numero
+		];
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+	}
 }
 ?>
