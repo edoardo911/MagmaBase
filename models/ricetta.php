@@ -100,6 +100,19 @@ class Ricetta
 		];
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
+		
+		//cascade
+		$sql = "DELETE FROM Ingrediente WHERE numeroRicetta = :numero";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		
+		$sql = "DELETE FROM RicettaPubblicata WHERE numeroRicetta = :numero";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+		
+		$sql = "DELETE FROM RicettaRegionale WHERE ricetta = :numero";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
 	}
 }
 ?>
