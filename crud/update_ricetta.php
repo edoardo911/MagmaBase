@@ -10,14 +10,19 @@ $id = $_POST['id'] ?? null;
 $titolo = $_POST['titolo'] ?? null;
 $tipo = $_POST['tipo'] ?? null;
 
-if (empty($id) || empty($titolo) || empty($tipo)) {
+if ($id === null || $id === '' || !is_numeric($id) || empty($titolo) || empty($tipo)) {
     http_response_code(400);
     echo json_encode(['error' => 'Input non validi']);
     exit;
 }
 
 $ricetta = new Ricetta();
-$ricetta->update($id, $titolo, $tipo);
-echo json_encode([
-	'success' => true
-]);
+$result = $ricetta->update((int) $id, $titolo, $tipo);
+
+if (!$result['success']) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Questa ricetta non può essere modificata']);
+    exit;
+}
+
+echo json_encode(['success' => true]);

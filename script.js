@@ -16,7 +16,8 @@ const entities = {
             { label: "Nome", name: "nome", searchable: true },
             { label: "Tipo", name: "tipo", searchable: true },
             { label: "Regione", name: "regioni", searchable: false },
-            { label: "N. pubblicazioni", name: "numPubblicazioni", searchable: false, numeric: true }
+            { label: "N. pubblicazioni", name: "numPubblicazioni", searchable: false, numeric: true },
+			{ label: "Verifica", name: "verifica", searchable: false, hidden: true }
         ]
     },
     regione: {
@@ -106,25 +107,37 @@ function renderResults(entityName, data) {
 
 	let html = '<table id="resultsTable"><thead><tr>';
 	entity.fields.forEach(field => {
+		if (field.hidden) return;
 		html += `<th>${field.label}</th>`;
 	});
 	html += '</tr></thead><tbody></tbody></table>';
 	$('#result').html(html);
 
 	const $tbody = $('#resultsTable tbody');
+
 	data.forEach(row => {
 		const $tr = $('<tr>');
 		entity.fields.forEach(field => {
+			if (field.hidden) return;
 			const value = row[field.name] ?? '';
-			const $td = $('<td>').text(value);
+			const $td = $('<td>');
 			if (field.numeric) $td.addClass('numeric');
+
+			if (field.name === 'nome' && entityName === 'ricetta') {
+				const isEditabile = Number(row.verifica) === 0;
+				const icon = isEditabile
+					? '<i class="fa-solid fa-triangle-exclamation" title="Non verificata"></i>'
+					: '<i class="fa-solid fa-circle-check" title="Verificata"></i>';
+				$td.append($(icon)).append(' ');
+			}
+
+			$td.append(document.createTextNode(value));
 			$tr.append($td);
 		});
 		$tr.data('rowData', row);
 		$tr.data('entityName', entityName);
 		$tbody.append($tr);
-		}
-	);
+	});
 }
 
 $(document).on('click', '#resultsTable tbody tr', function () {
@@ -221,9 +234,13 @@ function renderRicettaDetail(row) {
 			html += '</ul>';
 		}
 
-		html += `<button class='custom' id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
-		html += `<button class='custom' id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
-
+		if (Number(row.verifica) === 0) {
+			html += `<button class='custom' id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
+			html += `<button class='custom' id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
+		} else {
+			html += `<p><i class="fa-solid fa-circle-check"></i> Ricetta verificata: non modificabile.</p>`;
+		}
+		
 		$('#modalBody').html(html);
 	}).fail(function() {
 		$('#modalBody').html('<p>Errore nel caricamento dei dettagli.</p>');

@@ -1,5 +1,5 @@
 <?php
-require_once "Database.php";
+require_once __DIR__ . "/Database.php";
 
 class Ricetta
 {
@@ -12,7 +12,7 @@ class Ricetta
 	
 	public function search(array $filters): array
 	{
-		$sql = "SELECT ri.numero, ri.titolo AS nome, ri.tipo,
+		$sql = "SELECT ri.numero, ri.titolo AS nome, ri.tipo, ri.verifica,
 					GROUP_CONCAT(DISTINCT reg.nome SEPARATOR ', ') AS regioni,
 					(SELECT COUNT(*) FROM RicettaPubblicata WHERE RicettaPubblicata.numeroRicetta = ri.numero) AS numPubblicazioni
 				FROM Ricetta ri
@@ -29,7 +29,7 @@ class Ricetta
 			$params[":numero"] = $filters["numero"];
 		}
 	
-		$sql .= " GROUP BY ri.numero, ri.titolo, ri.tipo";
+		$sql .= " GROUP BY ri.numero, ri.titolo, ri.tipo, ri.verifica";
 	
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
@@ -57,7 +57,7 @@ class Ricetta
 	
 	public function create(string $titolo, string $tipo): void
 	{
-		$sql = "INSERT INTO Ricetta(titolo, tipo) values(:titolo, :tipo)";
+		$sql = "INSERT INTO Ricetta(titolo, tipo, verifica) values(:titolo, :tipo, 0)";
 		$params = [
 			":titolo" => $titolo,
 			":tipo" => $tipo,
@@ -79,9 +79,9 @@ class Ricetta
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	public function update($id, $titolo, $tipo): void
+	public function update($id, $titolo, $tipo): array
 	{
-		$sql = "UPDATE Ricetta SET titolo = :titolo, tipo = :tipo WHERE numero = :id";
+		$sql = "UPDATE Ricetta SET titolo = :titolo, tipo = :tipo WHERE numero = :id AND verifica = 0";
 		$params = [
 			":id" => $id,
 			":titolo" => $titolo,
@@ -90,29 +90,35 @@ class Ricetta
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
+
+		return ['success' => $stmt->rowCount() > 0];
 	}
 	
-	public function delete($numero): void
+	public function delete($numero): array
 	{
-		$sql = "DELETE FROM Ricetta WHERE numero = :numero";
-		$params = [
-			":numero" => $numero
-		];
+		$sql = "DELETE FROM Ricetta WHERE numero = :numero AND verifica = 0";
+		$params = [":numero" => $numero];
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		
-		//cascade
+
+		if ($stmt->rowCount() === 0) {
+			return ['success' => false];
+		}
+
 		$sql = "DELETE FROM Ingrediente WHERE numeroRicetta = :numero";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		
+
 		$sql = "DELETE FROM RicettaPubblicata WHERE numeroRicetta = :numero";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		
+
 		$sql = "DELETE FROM RicettaRegionale WHERE ricetta = :numero";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
+
+		return ['success' => true];
 	}
 }
 ?>

@@ -190,6 +190,18 @@ div#result {
 	text-align: right;
 }
 
+#resultsTable .fa-lock-open,
+#resultsTable .fa-lock {
+	margin-left: 0.4rem;
+	font-size: 0.85em;
+}
+#resultsTable .fa-lock-open {
+	color: #4a7c4a;
+}
+#resultsTable .fa-lock {
+	opacity: 0.6;
+}
+
 /* Modal */
 .modal-overlay {
 	display: flex;

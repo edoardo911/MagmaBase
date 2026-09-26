@@ -8,14 +8,19 @@ ini_set('display_startup_errors', 1);
 
 $numero = $_POST['numero'] ?? null;
 
-if (empty($numero)) {
+if ($numero === null || $numero === '' || !is_numeric($numero)) {
     http_response_code(400);
     echo json_encode(['error' => 'Input non validi']);
     exit;
 }
 
 $ricetta = new Ricetta();
-$ricetta->delete($numero);
-echo json_encode([
-	'success' => true
-]);
+$result = $ricetta->delete((int) $numero);
+
+if (!$result['success']) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Questa ricetta non può essere eliminata']);
+    exit;
+}
+
+echo json_encode(['success' => true]);
