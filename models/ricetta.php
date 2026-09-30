@@ -24,7 +24,11 @@ class Ricetta
 			":tipo"   => "%" . ($filters["tipo"] ?? "") . "%",
 		];
 	
-		if (!empty($filters["numero"])) {
+		if (isset($filters["numero"]) && $filters["numero"] !== "") {
+			$numero = filter_var($filters["numero"], FILTER_VALIDATE_INT);
+			if($numero === false)
+				return [];
+			
 			$sql .= " AND ri.numero = :numero";
 			$params[":numero"] = $filters["numero"];
 		}

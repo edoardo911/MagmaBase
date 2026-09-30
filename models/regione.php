@@ -19,7 +19,11 @@ class Regione
 			":nome" => "%" . ($filters["nome"] ?? "") . "%",
 		];
 		
-		if(!empty($filters["codice"])) {
+		if(isset($filters["codice"]) && $filters["codice"] !== "") {
+			$numero = filter_var($filters["codice"], FILTER_VALIDATE_INT);
+			if($numero === false)
+				return [];
+			
 			$sql .= " AND cod = :codice";
 			$params[":codice"] = $filters["codice"];
 		}
