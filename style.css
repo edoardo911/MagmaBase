@@ -190,6 +190,27 @@ div#result {
 	text-align: right;
 }
 
+#resultsTable {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-left: 1px solid var(--text-color);
+}
+#resultsTable th, #resultsTable td {
+	border-right: 1px solid var(--text-color);
+	border-bottom: 1px solid var(--text-color);
+	padding: 0.4rem;
+	text-align: left;
+}
+#resultsTable th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	border-top: 1px solid var(--text-color);
+	background-color: var(--text-color);
+	color: var(--bg-color);
+}
+
 #resultsTable .fa-lock-open,
 #resultsTable .fa-lock {
 	margin-left: 0.4rem;
@@ -200,6 +221,12 @@ div#result {
 }
 #resultsTable .fa-lock {
 	opacity: 0.6;
+}
+
+/* Scrollbars */
+* {
+	/*scrollbar-width: thin;*/
+	scrollbar-color: var(--text-color) var(--bg-color);
 }
 
 /* Modal */
@@ -217,6 +244,8 @@ div#result {
 
 .modal-box {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	
 	color: var(--text-color);
 	background-color: var(--bg-color);
@@ -226,8 +255,7 @@ div#result {
 	min-width: 300px;
 	max-width: 500px;
 	max-height: 80vh;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden;
 	padding: 1.5rem;
 }
 
@@ -273,8 +301,16 @@ div#result {
 }
 
 #modalTitle {
+	flex-shrink: 0;
 	font-size: 1.4rem;
 	margin: 0 1.5rem 0.5rem 0;
+}
+
+#modalBody {
+	flex: 1;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 /* Results table rows */
