@@ -177,7 +177,11 @@ form button {
 div#result {
 	flex: 1;
 	min-height: 0;
+	align-self: flex-start;
+	width: fit-content;
+	max-width: 100%;
 	overflow-y: auto;
+	scrollbar-gutter: stable;
 }
 
 #resultHint {
@@ -196,19 +200,6 @@ div#result {
 #resultsTable td.numeric {
 	text-align: right;
 }
-
-/*#resultsTable {
-	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
-	border-left: 1px solid var(--text-color);
-}
-#resultsTable th, #resultsTable td {
-	border-right: 1px solid var(--text-color);
-	border-bottom: 1px solid var(--text-color);
-	padding: 0.4rem;
-	text-align: left;
-}*/
 
 #resultsTable {
 	border-collapse: separate;
@@ -249,7 +240,6 @@ div#result {
 
 /* Scrollbars */
 * {
-	/*scrollbar-width: thin;*/
 	scrollbar-color: var(--text-color) var(--bg-color);
 }
 
@@ -298,7 +288,7 @@ div#result {
 }
 .modal-close:hover {
 	cursor: pointer;
-	color: #5a3d42; /* slightly darker than --text-color for hover contrast */
+	color: #5a3d42;
 }
 
 .modal-box dt {
