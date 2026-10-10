@@ -17,7 +17,7 @@ const entities = {
             { label: "Tipo", name: "tipo", searchable: true },
             { label: "Regione", name: "regioni", searchable: false },
             { label: "N. pubblicazioni", name: "numPubblicazioni", searchable: false, numeric: true },
-			{ label: "Verifica", name: "verifica", searchable: false, hidden: true }
+			{ label: "Stato", name: "verifica", searchable: false, hidden: true }
         ]
     },
     regione: {
@@ -29,6 +29,8 @@ const entities = {
         ]
     }
 };
+const ICON_VERIFICATA = '<i class="fa-solid fa-circle-check" title="Verificata"></i>';
+const ICON_NON_VERIFICATA = '<i class="fa-solid fa-circle-xmark" title="Non verificata"></i>';
 
 function showEntity(entityName) {
     const entity = entities[entityName];
@@ -69,6 +71,7 @@ $(function() {
 		showEntity(entity);
 		$('#result').empty();
 		$('#resultHint').hide();
+		$('#resultLegend').hide();
 	});
 	
 	$('.menu-item').first().addClass('selected');
@@ -99,8 +102,20 @@ function renderResults(entityName, data) {
 
 	if (!Array.isArray(data) || data.length === 0) {
 		$('#resultHint').hide();
+		$('#resultLegend').hide();
 		$('#result').html('<p>Nessun risultato trovato.</p>');
 		return;
+	}
+
+	$('#resultHint').show();
+
+	if (entityName === 'ricetta') {
+		$('#resultLegend').html(
+			`<p>${ICON_VERIFICATA} Ricetta verificata da un amministratore: non può essere modificata né eliminata</p>
+			<p>${ICON_NON_VERIFICATA} Ricetta non verificata, aggiunta da un utente: può essere modificata o eliminata da tutti</p>`
+		).show();
+	} else {
+		$('#resultLegend').hide();
 	}
 
 	$('#resultHint').show();
@@ -125,9 +140,7 @@ function renderResults(entityName, data) {
 
 			if (field.name === 'nome' && entityName === 'ricetta') {
 				const isEditabile = Number(row.verifica) === 0;
-				const icon = isEditabile
-					? '<i class="fa-solid fa-triangle-exclamation" title="Non verificata"></i>'
-					: '<i class="fa-solid fa-circle-check" title="Verificata"></i>';
+				const icon = isEditabile ? ICON_NON_VERIFICATA : ICON_VERIFICATA;
 				$td.append($(icon)).append(' ');
 			}
 
@@ -200,12 +213,21 @@ function renderRicettaDetail(row) {
 	$.when(ingredientiRequest, pubblicazioniRequest).done(function(ingredientiResult, pubblicazioniResult) {
 		const ingredienti = ingredientiResult[0];
 		const pubblicazioni = pubblicazioniResult[0];
-
+		
 		let html = '';
 		entities.ricetta.fields.forEach(field => {
 			if (field.name === 'nome') return; // already shown as the modal title
-			const value = row[field.name] ?? '';
-			html += `<dt>${field.label}</dt><dd>${$('<div>').text(value).html()}</dd>`;
+
+			let valueHtml;
+			if (field.name === 'verifica') {
+				valueHtml = Number(row.verifica) === 0
+					? '<i class="fa-solid fa-triangle-exclamation" title="Non verificata"></i> Non verificato'
+					: '<i class="fa-solid fa-circle-check" title="Verificata"></i> Verificato';
+			} else {
+				valueHtml = $('<div>').text(row[field.name] ?? '').html();
+			}
+
+			html += `<dt>${field.label}</dt><dd>${valueHtml}</dd>`;
 		});
 
 		html += '<h4>Ingredienti</h4>';
@@ -237,8 +259,6 @@ function renderRicettaDetail(row) {
 		if (Number(row.verifica) === 0) {
 			html += `<button class='custom' id='edit-recipe' data-id='${row.numero}'>Modifica <i class='fa-solid fa-pen'></i></button>`;
 			html += `<button class='custom' id='delete-recipe' data-id='${row.numero}'>Elimina <i class='fa-solid fa-trash-can'></i></button>`;
-		} else {
-			html += `<p><i class="fa-solid fa-circle-check"></i> Ricetta verificata: non modificabile.</p>`;
 		}
 		
 		$('#modalBody').html(html);
@@ -423,9 +443,11 @@ $(document).on('click', '#delete-recipe', function() {
 });
 
 $(document).on('click', '#modalClose', closeModal);
+
 $(document).on('click', '#detailModal', function (e) {
 	if (e.target === this) closeModal(); // only close on backdrop click, not inside the box
 });
+
 $(document).on('keydown', function (e) {
 	if (e.key === 'Escape') closeModal();
 });

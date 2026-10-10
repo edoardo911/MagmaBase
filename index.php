@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<header>
-			<span><b>MAGMABASE</b></span>
+			<span><b>RICETTARIO MAGMABASE</b></span>
 		</header>
 		
 		<nav>
@@ -30,8 +30,8 @@
 			<div id="content">
 				<h2>Risultati della ricerca</h2>
 				<p id="resultHint" style="display:none;">Cliccare su un risultato per maggiori informazioni</p>
-				<div id="result">
-				</div>
+				<div id="resultLegend" style="display:none;"></div>
+				<div id="result"></div>
 			</div>
 		</div>
 		

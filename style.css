@@ -183,14 +183,21 @@ div#result {
 #resultHint {
 	margin: 0.3rem 0 1rem 0;
 	font-style: italic;
-	opacity: 0.8;
+}
+
+#resultLegend {
+	margin-bottom: 1rem;
+}
+
+#resultLegend p {
+	margin: 0.2rem 0;
 }
 
 #resultsTable td.numeric {
 	text-align: right;
 }
 
-#resultsTable {
+/*#resultsTable {
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 0;
@@ -201,7 +208,22 @@ div#result {
 	border-bottom: 1px solid var(--text-color);
 	padding: 0.4rem;
 	text-align: left;
+}*/
+
+#resultsTable {
+	border-collapse: separate;
+	border-spacing: 0;
+	border-left: 1px solid var(--text-color);
 }
+
+#resultsTable th, #resultsTable td {
+	border-right: 1px solid var(--text-color);
+	border-bottom: 1px solid var(--text-color);
+	padding: 0.4rem 1rem;
+	text-align: left;
+	white-space: nowrap;
+}
+
 #resultsTable th {
 	position: sticky;
 	top: 0;
@@ -216,9 +238,11 @@ div#result {
 	margin-left: 0.4rem;
 	font-size: 0.85em;
 }
+
 #resultsTable .fa-lock-open {
 	color: #4a7c4a;
 }
+
 #resultsTable .fa-lock {
 	opacity: 0.6;
 }
@@ -238,7 +262,7 @@ div#result {
 	position: fixed;
 	top: 0; left: 0; right: 0; bottom: 0;
 	
-	background-color: rgba(127, 84, 91, 0.5); /* var(--text-color) with opacity */
+	background-color: rgba(127, 84, 91, 0.5);
 	z-index: 999;
 }
 
